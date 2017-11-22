@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="transactionStatus">
+    <h2> Transaction has been processed </h2>
+    <h3> Transaction ID : {{ txnid }} </h3>
+    <input type="submit" onClick="goToHome()" value="Home"/>
+</div>
+<script type="text/javascript">
+    function goToHome(){
+	location.href = "/";
+    }
+</script>
+{% endblock %}

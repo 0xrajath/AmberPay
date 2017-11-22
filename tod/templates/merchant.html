@@ -1,0 +1,335 @@
+<html>
+    <head>
+        <title> BatKart </title>
+    <style>
+        #paymentContainer{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #payments {
+            font-weight: bold;
+            text-decoration: none;
+            color: orange;
+            font-size: 28px;
+        }
+        #thankyou {
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 35px;
+        }
+        #imgContainer {
+            height: 100%;
+            width : 100%;
+        }
+        img {
+            max-width: 70%;
+            max-height: 70%;
+        }
+        #paymentOptions {
+            display: none;
+        }
+        .productContainer {
+            display:flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+        .priceDescBtnWrapper{
+            margin-top: 10%;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .price {
+            font-size: 30px;
+            text-align: center;
+        }
+        .productDescription{
+            font-size: 25px;
+        }
+        .priceDescWrapper{
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+        }
+        input[type=submit] {
+            color: white;
+            background-color: black;
+            font-size: 15px;
+            border-radius: 20%;
+            border : 0.2px solid;
+        }
+        #productPage{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #cart {
+            width: 100%;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            padding-left: 5px;
+            overflow-y: auto;
+            margin-top: 30px;
+        }
+        #cartStatusHeader {
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid;
+        }
+        #cartItems{
+            width: 32rem;
+            font-size: 1.5rem;
+        }
+        .cartItemWrapper{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        #totalAmount {
+            font-size: 2rem;
+            margin-top:24px;
+        }
+        #formContainer{
+            margin-left:30px;
+            margin-top: 50px;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: orange;
+            font-weight: bold;
+        }
+        .payments {
+         font-weight: bold;
+         text-decoration: none;
+         color: orange;
+         font-size: 28px;
+        }
+        #paymentPage{
+            display:none;
+            margin-left:41%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        #mainHeader {
+            text-align: center;
+            font: bold;
+            font-size: 45px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            font-family: Courier New, Courier, monospace;
+            font-weight: bold;
+        }
+       
+       /*table td {
+        border-right: 1px solid grey;
+        }*/
+
+        td, th {
+        border-left: solid 1px grey;
+        }
+
+    </style>
+    </head>
+    <body>
+        <div id="mainHeader"> BatKart </div>
+        <hr>
+        {% if error %}
+            <p style="color:red; text-align:center"> {{ error }} </p>
+        {% endif %}
+        <div id="productPage">
+        <table>
+            <tr>
+                <td style="width: 70%;">
+                    <div id="imgContainer" >
+                    </div>
+                </td>
+                <td valign="top"> 
+                    <div id="cart">
+                        <div id="cartStatusHeader"></div>
+                        <div id="cartItems"></div>
+                        <div id="totalAmount"></div>
+                        <input type="submit" value="Proceed to Payment" id="proceedToCheckOut"/>
+                    </div>
+                </td>
+            </div>
+            </tr>
+        </table>
+        </div>
+
+        
+        
+        
+        <div id="paymentOptions">
+            <div id="thankyou"> 
+                Please choose your payment option
+            </div> 
+            <hr>
+            <div id="paymentContainer"> 
+                <!--a id="payments" href="/payment/{{value}}">{{ key }} </a><hr-->
+                <div class="payments" onclick="transferOnDelivery()"> Transfer on Delivery </div>
+                <div style="margin-top:30px" class="payments"> Cash on Delivery </div>
+                <div style="margin-top:30px" class="payments"> Netbanking </div>
+                <div style="margin-top:30px" class="payments"> Debit Card </div>
+                <div style="margin-top:30px" class="payments"> Credit Card </div>
+                <div style="margin-top:30px" class="payments"> Wallet </div>
+            </div>
+        </div>
+        <!--<div id="productPage">
+            <div id="cart">
+                <div id="cartStatusHeader"></div>
+                <div id="cartItems"></div>
+                <div id="totalAmount"></div>
+                <input type="submit" value="Proceed to Payment" id="proceedToCheckOut"/>
+            </div>
+            <div id="imgContainer">
+            </div>
+        </div>-->
+        <div id="paymentPage">
+            <form action="{{ url_for('payment') }}" method="post">
+                <div id="formContainer">
+                    <div class="formTitle">Amount <br><input id="formAmount" type="textarea" name="formAmount" readonly="readonly" style="font-size:16pt;height:30px;width:230px;"></input></div> <br>
+                    <div class="formTitle"> Remarks <br><input id="formRemarks" type="textarea" name="formRemarks" placeholder="Remarks" style="font-size:16pt;height:30px;width:230px;"></input> </div><br>
+                    <div class="formTitle"> Customer VPA <br><input id="formCustomerVPA" type="textarea" name="formCustomerVPA" placeholder="yourname@bank" style="font-size:16pt;height:30px;width:230px;"></input></div><br>
+                    <input type="submit" class="transactionSubmitBtn" value="PAY" />
+                </div>
+            </form>
+        </div>
+    </body>
+
+    <script type="text/javascript">
+        var amount = 0;
+        var counter = 0;
+        var cartItems = [];
+        var products = [
+            { id:'batClaw', name: 'Batarang', price: '50', description:'Batarang', url:'images/Batarang.jpg'} ,
+            { id:'batMask',name: 'Batman Mask', price: '100', description:'Batman Mask', url:'images/batMask.jpg'},
+            { id:'batCape',name: 'Batman Figure', price: '200', description:'Batman Figure', url:'images/batCape.jpg'},
+            { id:'batGrapple',name: 'Bat Grapple', price: '150', description:'Bat Grapple', url:'images/GrappleGun.jpg'}
+        ];
+        
+        function transferOnDelivery(){
+
+            document.getElementById('paymentOptions').style.display = "none";
+            document.getElementById('paymentPage').style.display = "block";
+            document.getElementById('formAmount').value =  amount;
+            //document.getElementById('formAmount').disabled = true;
+            
+        }
+
+        function addToCart(product){
+            console.log(product);
+            amount+=parseInt(product.price);
+            counter+=1;
+            cartItems.push(product);
+            document.getElementById('cartStatusHeader').innerHTML = counter + ' Items in Cart';
+            document.getElementById('totalAmount').innerHTML = 'Net Amt: '+ 'Rs ' + amount;
+            document.getElementById('proceedToCheckOut').style.visibility = 'visible';
+            updateCartView();
+        }
+        function removeFromCart(index){
+            amount-=cartItems[index].price;
+            counter-=1;
+            cartItems.splice(index, 1);
+            document.getElementById('cartStatusHeader').innerHTML = counter + ' Items in Cart';
+            document.getElementById('totalAmount').innerHTML = 'Net Amt: '+ 'Rs ' + amount;
+            document.getElementById('proceedToCheckOut').style.visibility = 'visible';
+            updateCartView();
+        }
+        function showPaymethod() {
+            document.getElementById('productPage').style.display = "none";
+            document.getElementById('paymentOptions').style.display = "block";
+        }
+        function updateCartView(){
+            // there will be a button for removing the order.. that will listen for removing and adding
+            document.getElementById('cartItems').innerHTML = '';
+            console.log(cartItems);
+            cartItems.forEach(function(item, index){
+                var cartItemWrapper = document.createElement('div');
+                cartItemWrapper.className = 'cartItemWrapper';
+                var cartItemName = document.createElement('div');
+                cartItemName.className = 'cartItemName';
+                cartItemName.innerHTML = item.name;
+                var cartItemPrice = document.createElement('div');
+                cartItemPrice.className = 'cartItemPrice';
+                cartItemPrice.innerHTML = item.price;
+                var addItemBtn = document.createElement('input');
+                addItemBtn.type = 'submit';
+                addItemBtn.value = '+ Add';
+                addItemBtn.addEventListener('click', addToCart.bind(this, item), false);
+                var removeItemBtn = document.createElement('input');
+                removeItemBtn.type = 'submit';
+                removeItemBtn.value = '- Remove';
+                removeItemBtn.addEventListener('click', removeFromCart.bind(this, index), false);
+                cartItemWrapper.append(cartItemName);
+                cartItemWrapper.append(cartItemPrice);
+                cartItemWrapper.append(addItemBtn);
+                cartItemWrapper.append(removeItemBtn);
+                document.getElementById('cartItems').append(cartItemWrapper);
+            });
+            if (cartItems.length == 0){
+                console.log('obviousl comes here');
+                document.getElementById('cartStatusHeader').innerHTML = 'Cart is Empty';
+                document.getElementById('totalAmount').innerHTML = '';
+                document.getElementById('proceedToCheckOut').style.visibility = 'hidden';
+            }
+        }
+        (function(){
+            document.getElementById('cartStatusHeader').innerHTML = 'Cart is Empty';
+            document.getElementById('proceedToCheckOut').style.visibility = 'hidden';
+            document.getElementById('proceedToCheckOut').addEventListener('click', showPaymethod, false);
+            products.forEach(function(product){
+                var imageContainer = document.getElementById('imgContainer');
+                var batClawDiv = document.createElement('div');
+                var batClawImg = document.createElement('img');
+                var batClawPrice = document.createElement('div');
+                var batClawPriceText =  document.createElement('span');
+                var batClawDesc = document.createElement('div');
+                var batClawDescText = document.createElement('span');
+                var batClawAddToCartBtn = document.createElement('input');
+                var priceDescWrapper = document.createElement('div');
+                var sillyWrapper = document.createElement('div');
+
+                batClawDiv.className = 'productContainer';
+                //batClawDiv.style.height = "150px";
+                //batClawDiv.style.width = "100%";
+                if (product.id=='batClaw'){
+                    batClawImg.src = " {{ url_for('static', filename='images/Batarang.jpg') }} ";
+                }
+                else if(product.id == 'batCape'){
+                    batClawImg.src = " {{ url_for('static', filename='images/batmanModel.jpg') }} ";
+                }
+                else if(product.id == 'batMask'){
+                    batClawImg.src = " {{ url_for('static', filename='images/batMask.jpg') }} ";
+                }
+                else if(product.id == 'batGrapple'){
+                    batClawImg.src = " {{ url_for('static', filename='images/GrappleGun.jpg') }} ";
+                }
+                batClawPrice.className = 'price';
+                batClawPriceText.innerHTML = 'Rs '+ product.price ;
+                batClawPrice.append(batClawPriceText);
+                batClawDesc.className = 'productDescription';
+                batClawDescText.innerHTML = product.description;
+                batClawDesc.append(batClawDescText);
+                batClawAddToCartBtn.type = 'submit';
+                batClawAddToCartBtn.value = 'Add to Cart';
+                batClawAddToCartBtn.addEventListener('click', addToCart.bind(this, product), false);
+                
+                priceDescWrapper.className = 'priceDescWrapper';
+                priceDescWrapper.append(batClawPrice);
+                priceDescWrapper.append(batClawDesc);
+
+                sillyWrapper.className = 'priceDescBtnWrapper';
+                sillyWrapper.append(priceDescWrapper);
+                sillyWrapper.append(batClawAddToCartBtn);
+
+                batClawDiv.append(batClawImg);
+                batClawDiv.append(sillyWrapper);
+
+                imageContainer.append(batClawDiv);
+            });
+        })();
+    </script>
+</html>

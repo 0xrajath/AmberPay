@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <title>
+            Admin
+        </title>
+        <style>
+            .transactionStatus{
+                display: flex;
+                flex-direction: column;
+                padding-left: 10px;
+                overflow-y: auto;
+            }
+            .transactionTitle, .transactionStatusCode{
+                font-weight: bold;
+                font-size: 30px;
+            }
+            .transactionDetails{
+                display: flex;
+                flex-direction: column;
+                font-size: 10px;
+                margin-bottom: 20px;
+            }
+            .iciciTransactions{
+                display: flex;
+                flex-direction: row;
+
+            }
+            table {
+                width: 100%;
+                display:none;
+            }
+            th{
+                font-size: 25px;
+                border: 1px solid #dddddd;
+                width: 20%;
+            }
+            td {
+                font-size: 27px;
+                color: grey;
+                text-overflow: ellipsis;
+                border: 1px solid #dddddd;
+                width: 20%;
+            }
+            .lineSeparator {
+                border-bottom: 1px solid;
+            }
+            .transactionHeader {
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 50px;
+                margin-top: 50px;
+            }
+            #mainHeader {
+                text-align: center;
+                font-weight: bold;
+                font-size: 35px;
+                margin-top: 50px;
+                margin-bottom: 50px;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id="mainHeader"> Transaction Panel </div>
+        <hr>
+       
+        {% for transaction in response %}
+        <div class="transactionStatus" onClick="showTable({{transaction.transaction_id}})">
+                <div class="transactionHeader">
+                    <div class="transactionTitle">
+                        Transaction {{ transaction.transaction_id}}
+                    </div>
+                    <div class="transactionStatusCode" style="padding-left:40px; color:{{ status_color[transaction.status] }}">
+                        {{ status_tod[transaction.status]}}
+                    </div>
+                </div>
+                <div class="transactionDetails">
+                    <table id="{{transaction.transaction_id}}">
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Payer VPA</th>
+                            <th>Payee VPA</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    {% for icici_txn in transaction.tod_transactions_icici.all() %}
+                        <tr>
+                            <td><span> {{ icici_txn.transaction_id }} </span></td>
+                            <td><span> {{ transaction.amount }} </span></td>
+                            <td><span> {{ custid_to_vpa[icici_txn.payer_id] }} </span></td>
+                            <td><span> {{ custid_to_vpa[icici_txn.payee_id] }} </span></td>
+                            <td><span> {{ icici_txn.timestamp }} </span></td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="lineSeparator"></div>
+        {% endfor %}
+
+    </body>
+    <script type="text/javascript">
+    
+        function showTable(id){
+            console.log('clicking')
+            var element = document.getElementById(id);
+            console.log(element);
+            if (element.style.display == "none")
+                element.style.display = "block";
+            else
+                element.style.display = "none";
+        }
+    </script>
+</html>

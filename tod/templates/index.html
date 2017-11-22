@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    #container{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 130px;
+        font-family : 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+    #mainHeader{
+        margin-left: 20px;
+        font-family : 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-size: 45px;
+        font-weight: bold;
+    }
+</style>
+<div id="mainHeader"> <img src="../static/images/AmberPay.jpg" width="227.67" height="73.67" style="float: left;" /></div>
+<br>
+<br>
+<div id="container">
+    <a style="text-decoration:none; color:orange; font-size:36px;padding-right:50px" href="{{url_for('merchant')}}">Merchant</a>  
+    <a style="text-decoration:none; color:orange; font-size:36px;padding-left:120px" href="{{url_for('admin')}}">Transactions</a> 
+</div>
+<div id="container">
+    <a style="text-decoration:none; color:orange; font-size:36px" href="{{url_for('vote', person='customer')}}">Customer Vote</a> 
+    <a style="text-decoration:none; color:orange; font-size:36px;padding-left:100px" href="{{url_for('vote', person='delivery')}}">Delivery Vote</a> 
+</div>
+{% endblock %}

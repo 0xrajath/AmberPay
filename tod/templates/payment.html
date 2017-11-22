@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="mainHeader"> BatKart </div>
+    <hr>
+    <div id="subHeader"> Welcome to Transfer on deliver </h1>
+    <form action="" method="post" name="transaction">
+        {{ form.hidden_tag() }}
+        <div id="formContainer">
+            <div class="formTitle"> Amount: {{ form.amount }} </div> <br>
+            <div class="formTitle"> Remarks: {{ form.remarks }} </div><br>
+            <div class="formTitle"> Customer VPA: {{ form.customer_vpa }} </div><br>
+            <input type="submit" class="transactionSubmitBtn" value="Make Payment" />
+        </div>
+    </form>
+{% endblock %}

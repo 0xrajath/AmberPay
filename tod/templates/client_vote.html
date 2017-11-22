@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="" method="post" name="vote">
+        {{ form.hidden_tag() }}
+        <div id="formContainer">
+            <div class="formTitle"> Product received: {{ form.product_received }} </div><br>
+            <div class="formTitle"> Product in good condition: {{ form.product_good_condition }} </div><br>
+            <input type="submit" class="transactionSubmitBtn" value="vote" />
+        </div>
+    </form>
+
+{% endblock %}
+
