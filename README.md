@@ -1,5 +1,4 @@
-#AmberPay
-A Payment Gateway which implements a novel payment method called Transfer on Delivery (ToD) for e-commerce platform, using an escrow mechanism.
+A Payment Gateway which implements a novel escrow payment method called Transfer on Delivery (ToD) for e-commerce platforms.
 
 To Run:
 1) pip install -r requirements.txt
