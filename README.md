@@ -8,4 +8,4 @@ To Run:
 
 Access the localhost on a browser of your choice.
 
-Note: This was an entry an entry to the ICICI Appathon 2017 that got shortlisted to the second-last round. It might not work at the moment as it uses a few of the ICICI Rest APIs that they might have disabled.
+Note: This was an entry to the ICICI Appathon 2017 that got shortlisted to the second-last round. It may not work at the moment as it uses a few of the ICICI Rest APIs that might have been disabled.
